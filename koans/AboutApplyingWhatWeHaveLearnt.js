@@ -111,7 +111,7 @@ describe("About Applying What We Have Learnt", function() {
   /* UNCOMMENT FOR EXTRA CREDIT */
   /* */
   it("should find the largest prime factor of a composite number", function () {
-      function prime(number) {
+      function isPrime(number) {
 	  // true if number is prime, assumes number is an integer > 0
 	  number = Math.floor(number);
 	  if (number === 1) return false;
@@ -130,10 +130,10 @@ describe("About Applying What We Have Learnt", function() {
 	  return array;
       }
 
-      var primes = range(1,10).filter(prime);
-      expect(prime(2)).toBe(true);
-      expect(prime(4)).toBe(false);
-      expect(prime(5)).toBe(true);
+      var primes = range(1,10).filter(isPrime);
+      expect(isPrime(2)).toBe(true);
+      expect(isPrime(4)).toBe(false);
+      expect(isPrime(5)).toBe(true);
 
       function factors(number) {
 	  // Returns a list of all factors of number, not including 1 and itself
@@ -150,7 +150,7 @@ describe("About Applying What We Have Learnt", function() {
 
       function largestPrimeFactor(number) {
 	  // Returns the largest prime factor of number
-	  var primeFactors = factors(number).filter(prime);
+	  var primeFactors = factors(number).filter(isPrime);
 	  return primeFactors.pop(); // as factors are in numeric order (ASC)
       }
 
@@ -177,11 +177,11 @@ describe("About Applying What We Have Learnt", function() {
 	  }
 	  return false;
       }
-
       expect(isPalindrome("1234321")).toBe(true);
       expect(isPalindrome("123321")).toBe(true);
       expect(isPalindrome("12345")).toBe(false);
 
+      // Optimisation: just search top 10% of range to save time
       const bottom = 900, top = 999, range = top - bottom + 1;
       var products = [];
       for (var i = bottom; i <= top; i++) {
@@ -205,8 +205,7 @@ describe("About Applying What We Have Learnt", function() {
       
       function divisibleByRange(number, range) {
 	  // Returns whether the number is divisible by all integers from 1 to 20
-	  // number is assumed to be a positive integer > 0
-	  
+	  // number is assumed to be a positive integer > 0	  
 	  // Optimisation: count backwards for quicker elimination
 	  for (var i = range; i >= 2; i--) {
 	      // number must have ALL as divisors
@@ -226,11 +225,57 @@ describe("About Applying What We Have Learnt", function() {
   });
 
   it("should find the difference between the sum of the squares and the square of the sums", function () {
-      expect(1).toBe(0);
+      // Note: this is Project Euler.net problem 6
+      // Approach: Make array of the first 100 natural numbers
+      //           use a reduce to calculate sum, and then square
+      //           use a map to calculate the square, then a reduce to sum
+
+      function range(start, end) { 
+	  var array = [];
+	  for (var i = start; i <= end; i++) {
+	      array.push(i);
+	  } 
+	  return array;
+      }
+
+      function sum(a, b) {
+	  return a + b;
+      }
+      
+      function square(a) {
+	  return a * a;
+      }
+
+      var naturalNums = range(1,100);
+      var sums = Math.pow(naturalNums.reduce(sum), 2);
+      var squares = naturalNums.map(square).reduce(sum);
+      expect(sums).toBe(25502500);
+      expect(squares).toBe(338350);
   });
 
   it("should find the 10001st prime", function () {
-      expect(1).toBe(0);
+      // Approach: Count up, check each number to see if a prime, if it is then 
+      //           increment counter, stop at 10001
+
+      function isPrime(number) {
+	  // true if number is prime, assumes number is an integer > 0
+	  number = Math.floor(number);
+	  if (number === 1) return false;
+	  if (number === 2) return true;
+	  for (var i = 2; i <= Math.sqrt(number + 0.5); i++) {
+	      if (number % i === 0) return false; // has divisor, hence not prime
+	  }
+	  return true; // has no divisors 
+      }
+
+      var count = 0, i = 1; // 2 is the first prime
+      do {
+	  i++;
+	  if (isPrime(i)) {
+	      count++;
+	  }
+      } while (count < 10001);
+      expect(i).toBe(104743);
   });
  
 });
