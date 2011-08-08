@@ -2,51 +2,57 @@ var _; //globals
 
 describe("About Applying What We Have Learnt", function() {
 
-  var products;
+    var products;
 
-  beforeEach(function () { 
-    products = [
-       { name: "Sonoma", ingredients: ["artichoke", "sundried tomatoes", "mushrooms"], containsNuts: false },
-       { name: "Pizza Primavera", ingredients: ["roma", "sundried tomatoes", "goats cheese", "rosemary"], containsNuts: false },
-       { name: "South Of The Border", ingredients: ["black beans", "jalapenos", "mushrooms"], containsNuts: false },
-       { name: "Blue Moon", ingredients: ["blue cheese", "garlic", "walnuts"], containsNuts: true },
-       { name: "Taste Of Athens", ingredients: ["spinach", "kalamata olives", "sesame seeds"], containsNuts: true }
-    ];
-  });
-
-  /*********************************************************************************/
-
-  it("given I'm allergic to nuts and hate mushrooms, it should find a pizza I can eat (imperative)", function () {
-
-    var i,j,hasMushrooms, productsICanEat = [];
-
-    for (i = 0; i < products.length; i+=1) {
-        if (products[i].containsNuts === false) {
-            hasMushrooms = false;
-            for (j = 0; j < products[i].ingredients.length; j+=1) {
-               if (products[i].ingredients[j] === "mushrooms") {
-                  hasMushrooms = true;
-               }
+    beforeEach(function () { 
+	products = [
+	    { name: "Sonoma", ingredients: ["artichoke", "sundried tomatoes", "mushrooms"], containsNuts: false },
+	    { name: "Pizza Primavera", ingredients: ["roma", "sundried tomatoes", "goats cheese", "rosemary"], containsNuts: false },
+	    { name: "South Of The Border", ingredients: ["black beans", "jalapenos", "mushrooms"], containsNuts: false },
+	    { name: "Blue Moon", ingredients: ["blue cheese", "garlic", "walnuts"], containsNuts: true },
+	    { name: "Taste Of Athens", ingredients: ["spinach", "kalamata olives", "sesame seeds"], containsNuts: true }
+	];
+    });
+    
+    /*********************************************************************************/
+    
+    it("given I'm allergic to nuts and hate mushrooms, it should find a pizza I can eat (imperative)", function () {
+	
+	var i,j,hasMushrooms, productsICanEat = [];
+	
+	for (i = 0; i < products.length; i+=1) {
+            if (products[i].containsNuts === false) {
+		hasMushrooms = false;
+		for (j = 0; j < products[i].ingredients.length; j+=1) {
+		    if (products[i].ingredients[j] === "mushrooms") {
+			hasMushrooms = true;
+		    }
+		}
+		if (!hasMushrooms) productsICanEat.push(products[i]);
             }
-            if (!hasMushrooms) productsICanEat.push(products[i]);
-        }
-    }
+	}
+	
+	expect(productsICanEat.length).toBe(1);
+    });
+    
+    it("given I'm allergic to nuts and hate mushrooms, it should find a pizza I can eat (functional)", function () {
+	
+	/* solve using filter() & all() / any() */
+	var CheckNoNuts = function(recipe){
+	    return (recipe.containsNuts === false);
+	}
+	var CheckNoMushrooms = function(recipe){
+	    return (recipe.ingredients.indexOf("mushrooms") === -1);
+	}
 
-    expect(productsICanEat.length).toBe(FILL_ME_IN);
-  });
+	var productsICanEat = products.filter(CheckNoNuts).filter(CheckNoMushrooms);
+	
+	expect(productsICanEat.length).toBe(1);
+    });
+    
+    /*********************************************************************************/
 
-  it("given I'm allergic to nuts and hate mushrooms, it should find a pizza I can eat (functional)", function () {
-
-      var productsICanEat = [];
-
-      /* solve using filter() & all() / any() */
-
-      expect(productsICanEat.length).toBe(FILL_ME_IN);
-  });
-
-  /*********************************************************************************/
-
-  it("should add all the natural numbers below 1000 that are multiples of 3 or 5 (imperative)", function () {
+    it("should add all the natural numbers below 1000 that are multiples of 3 or 5 (imperative)", function () {
     
     var sum = 0;
     for(var i=1; i<=1000; i+=1) {
@@ -55,14 +61,23 @@ describe("About Applying What We Have Learnt", function() {
       }
     }
     
-    expect(sum).toBe(FILL_ME_IN);
+    expect(sum).toBe(234168);
   });
 
   it("should add all the natural numbers below 1000 that are multiples of 3 or 5 (functional)", function () {
+      
+      function range(start, end) { 
+	  var array = [];
+	  for (var i = start; i <= end; i++) {
+	      array.push(i);
+	  } 
+	  return array;
+      }
 
-    var sum = FILL_ME_IN;    /* try chaining range() and reduce() */
+      var multiples = range(1,1000).filter(function(i){ return (i % 3 === 0 || i % 5 === 0);});
+      var sum = multiples.reduce(function(a, b){ return a + b;}, 0);
 
-    expect(234168).toBe(FILL_ME_IN);
+      expect(234168).toBe(sum);
   });
 
   /*********************************************************************************/
@@ -75,39 +90,88 @@ describe("About Applying What We Have Learnt", function() {
         }
     }
 
-    expect(ingredientCount['mushrooms']).toBe(FILL_ME_IN);
+    expect(ingredientCount['mushrooms']).toBe(2);
   });
 
   it("should count the ingredient occurrence (functional)", function () {
-    var ingredientCount = { "{ingredient name}": 0 };
+      var ingredientCount = {};
 
-    /* chain() together map(), flatten() and reduce() */
+      /* chain() together map(), flatten() and reduce() */
+      var listOfIngredients = (_.pluck(products,'ingredients')).
+	  reduce(function(a,b){ return a.concat(b);});
 
-    expect(ingredientCount['mushrooms']).toBe(FILL_ME_IN);
+      ingredientCount = listOfIngredients.reduce(function(hash, item){
+	  hash[item] = (hash[item] || 0) + 1;
+	  return hash;
+      }, {});
+      expect(ingredientCount['mushrooms']).toBe(2);
   });
 
   /*********************************************************************************/
   /* UNCOMMENT FOR EXTRA CREDIT */
-  /*
+  /* */
   it("should find the largest prime factor of a composite number", function () {
-  
-  });
+      function prime(number) {
+	  // true if number is prime, assumes number is an integer > 0
+	  number = Math.floor(number);
+	  if (number === 1) return false;
+	  if (number === 2) return true;
+	  for (var i = 2; i <= Math.sqrt(number + 0.5); i++) {
+	      if (number % i === 0) return false; // has divisor, hence not prime
+	  }
+	  return true; // has no divisors 
+      }
 
-  it("should find the largest palindrome made from the product of two 3 digit numbers", function () {
+      function range(start, end) { 
+	  var array = [];
+	  for (var i = start; i <= end; i++) {
+	      array.push(i);
+	  } 
+	  return array;
+      }
+
+      var primes = range(1,10).filter(prime);
+      expect(prime(2)).toBe(true);
+      expect(prime(4)).toBe(false);
+      expect(prime(5)).toBe(true);
+
+      function factors(number) {
+	  // Returns a list of all factors of number, not including 1 and itself
+	  // number is assumed to be an integer >= 2
+	  var arrayOfFactors = [];
+	  number = Math.floor(number); // just in case it isn't an integer!
+	  for (var i = 2; i <= number / 2; i++) {
+	      if (number % i === 0) arrayOfFactors.push(i); 
+	  }
+	  return arrayOfFactors;
+      }
+
+      expect(factors(10)).toEqual([2,5]);
+
+      function largestPrimeFactor(number) {
+	  // Returns the largest prime factor of number
+	  var primeFactors = factors(number).filter(prime);
+	  return primeFactors.pop(); // as factors are in numeric order (ASC)
+      }
+
+      expect(largestPrimeFactor(70)).toBe(7);
+      expect(largestPrimeFactor(754151)).toBe(991);
+  });
     
+  it("should find the largest palindrome made from the product of two 3 digit numbers", function () {
+      expect(1).toBe(0);
   });
 
   it("should find the smallest number divisible by each of the numbers 1 to 20", function () {
-      
-    
+      expect(1).toBe(0);
   });
 
   it("should find the difference between the sum of the squares and the square of the sums", function () {
-    
+      expect(1).toBe(0);
   });
 
   it("should find the 10001st prime", function () {
-
+      expect(1).toBe(0);
   });
-  */
+ 
 });
