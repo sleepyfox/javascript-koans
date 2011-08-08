@@ -197,40 +197,32 @@ describe("About Applying What We Have Learnt", function() {
       expect("906609").toBe(palindromes.pop());
   });
 
-  it("should find the smallest number divisible by each of the numbers 1 to 20", function () {
-      function factors20(number) {
-	  // Returns a list of all factors of number, not including 1 and itself, upto 20
-	  // number is assumed to be an integer >= 2
-	  var arrayOfFactors = [];
-	  number = Math.floor(number); // just in case it isn't an integer!
-	  for (var i = 2; i <= 20; i++) {
-	      if (number % i === 0) arrayOfFactors.push(i); 
-	  }
-	  return arrayOfFactors;
-      }
-
-      function divisibleByAll(number, maxDivisor) {
-	  // Returns whether the number is divisible by all integers from 1 to maxDivisor
+  it("should find the smallest number divisible by each of the numbers 1 to 20", function () {      
+      // Approach: count up, check each one to make sure it is divisible by all 
+      // integers from 2..20
+      // Note: did try doing this in a more functional manner, but manipulating
+      //       arrays proved to be approx 10x-100x as slow :/
+      
+      function divisibleByRange(number, range) {
+	  // Returns whether the number is divisible by all integers from 1 to 20
 	  // number is assumed to be a positive integer > 0
-	  // top is assumed to be a positive integer > 0 and <= 20
-	  var arrayOfFactors = factors20(number);
-	  // check for all factors 2..maxDivisor
-	  for (var i = 2; i <= maxDivisor; i++) {
-	      if (arrayOfFactors.indexOf(i) < 0) {
-		  return false;
-	      }
+	  
+	  // Optimisation: count backwards for quicker elimination
+	  for (var i = range; i >= 2; i--) {
+	      // number must have ALL as divisors
+	      if (number % i != 0) return false;
 	  }
 	  return true;
       }
-      expect(divisibleByAll(10,5)).toBe(false);
-      expect(divisibleByAll(60,5)).toBe(true);
+      expect(divisibleByRange(232792560)).toBe(true);
 
       // count till we find one
-      var count = 20; 
-      while (!divisibleByAll(count,20)) {
+      const MAX_DIVISOR = 20;
+      var count = MAX_DIVISOR;
+      while (!divisibleByRange(count, MAX_DIVISOR)) {
 	  count++;
       } 
-      expect(count).toBe(232792560);
+      expect(count).toBe(232792560); 
   });
 
   it("should find the difference between the sum of the squares and the square of the sums", function () {
