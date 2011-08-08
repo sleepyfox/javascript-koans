@@ -159,11 +159,78 @@ describe("About Applying What We Have Learnt", function() {
   });
     
   it("should find the largest palindrome made from the product of two 3 digit numbers", function () {
-      expect(1).toBe(0);
+      // Approach: construct the array of all 3 digit products = 900*900=810K
+      // Sort the array (removing duplicates?)
+      // Starting at the end, work backwards to find the first that is a palindrome
+      
+      function isPalindrome(string) {
+	  // Returns true if the number is a palindrome 
+	  // (reads the same forwards as backwards)
+	  // Approach:
+	  //   aXb is a palindrome if (a===b) and X is a palindrome
+	  //   X is a palindrome if X.length = 1 or 0
+	  if (string.length < 2) {
+	      return true;
+	  }
+	  if (string[0] === string[string.length - 1]) {
+	      return isPalindrome(string.substr(1, string.length - 2));
+	  }
+	  return false;
+      }
+
+      expect(isPalindrome("1234321")).toBe(true);
+      expect(isPalindrome("123321")).toBe(true);
+      expect(isPalindrome("12345")).toBe(false);
+
+      const bottom = 900, top = 999, range = top - bottom + 1;
+      var products = [];
+      for (var i = bottom; i <= top; i++) {
+	  for (var j = bottom; j <= top; j++) {
+	      products.push("" + (i * j));
+	  }
+      }
+      expect(range).toBe(100);
+      expect(products.length).toBe(range * range);
+      expect(products[products.length - 1]).toBe((999 * 999).toString());
+
+      var palindromes = products.filter(isPalindrome).sort();
+      expect("906609").toBe(palindromes.pop());
   });
 
   it("should find the smallest number divisible by each of the numbers 1 to 20", function () {
-      expect(1).toBe(0);
+      function factors20(number) {
+	  // Returns a list of all factors of number, not including 1 and itself, upto 20
+	  // number is assumed to be an integer >= 2
+	  var arrayOfFactors = [];
+	  number = Math.floor(number); // just in case it isn't an integer!
+	  for (var i = 2; i <= 20; i++) {
+	      if (number % i === 0) arrayOfFactors.push(i); 
+	  }
+	  return arrayOfFactors;
+      }
+
+      function divisibleByAll(number, maxDivisor) {
+	  // Returns whether the number is divisible by all integers from 1 to maxDivisor
+	  // number is assumed to be a positive integer > 0
+	  // top is assumed to be a positive integer > 0 and <= 20
+	  var arrayOfFactors = factors20(number);
+	  // check for all factors 2..maxDivisor
+	  for (var i = 2; i <= maxDivisor; i++) {
+	      if (arrayOfFactors.indexOf(i) < 0) {
+		  return false;
+	      }
+	  }
+	  return true;
+      }
+      expect(divisibleByAll(10,5)).toBe(false);
+      expect(divisibleByAll(60,5)).toBe(true);
+
+      // count till we find one
+      var count = 20; 
+      while (!divisibleByAll(count,20)) {
+	  count++;
+      } 
+      expect(count).toBe(232792560);
   });
 
   it("should find the difference between the sum of the squares and the square of the sums", function () {
