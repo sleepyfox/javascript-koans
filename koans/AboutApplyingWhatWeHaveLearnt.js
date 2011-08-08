@@ -268,14 +268,14 @@ describe("About Applying What We Have Learnt", function() {
 	  return true; // has no divisors 
       }
 
-      var count = 0, i = 1; // 2 is the first prime
+      var count = 0, number = 1; // 2 is the first prime
       do {
-	  i++;
-	  if (isPrime(i)) {
+	  number++;
+	  if (isPrime(number)) {
 	      count++;
 	  }
       } while (count < 10001);
-      expect(i).toBe(104743);
+      expect(number).toBe(104743);
   });
  
 });
