@@ -1,4 +1,6 @@
 # Javascript Koans - koans to learn Javascript (the good bits) #
+_These are my completed koans from Ben Hall's [Javascript Koans](https://github.com/BenHall/javascript-koans) Git repo. His documentation presented below:_
+
 
 Based on Edgecase's fantastic 
 [Ruby koans](http://github.com/edgecase/ruby_koans), the goal of the
